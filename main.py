@@ -24,12 +24,8 @@ def get_destinations_names_list(condition):
     destinations_query_result = select_queries.select('serial_num, location', 'airports', condition)
     destinations_list_dictionary = [{'serial_num': num[0], 'name': num[1]} for num in destinations_query_result]
     return destinations_list_dictionary
-# Display unvisited lists
-
 
 # check existing player in the database
-
-
 def get_existing_player_info(email):
     existing_player = select_queries.select('email', 'users', f"email='{email}'")
 
