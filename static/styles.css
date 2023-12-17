@@ -109,12 +109,12 @@ input {
     padding: 5px;
     border-radius: 8px;
     margin: 5px 0;
-    height: auto;
+    height: 10vh;
 }
 
 /* Destination */
-.destination {
-    position: relative;
+.destination-btn {
+    /*position: relative;*/
     min-height: 2rem;
     width: auto;
     border-radius: 8px;
@@ -123,15 +123,9 @@ input {
     display: flex;
     align-items: center;
     padding: 3px 6px;
-}
-
-.destination:hover {
-    cursor: pointer;
-}
-
-.destination p {
     color: white;
 }
+
 
 
 /* Play Again Container */
@@ -143,7 +137,7 @@ input {
     border-radius: 8px;
     margin: 5px;
     background-color: #f4f4f4;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     padding: 3px 6px;

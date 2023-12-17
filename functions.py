@@ -7,6 +7,18 @@ select_queries = queries_connector.SelectQueries(wonder_database)
 insert_queries = queries_connector.InsertQueries(wonder_database)
 update_queries = queries_connector.UpdateQueries(wonder_database)
 
+def get_destinations_names_list(condition):
+    destinations_query_result = select_queries.select('serial_num, location', 'airports', condition)
+    destinations_list = [{'serial_num': num[0], 'name': num[1]} for num in destinations_query_result]
+    return destinations_list
+
+destinations_names_list = []
+select_all_destinations = get_destinations_names_list('serial_num < 17')
+destinations_names_list.extend(select_all_destinations)
+print(destinations_names_list)
+
+"""
+
 current_location = select_queries.select('location', 'airports', f"serial_num='{17}'")[0][0]
 print(current_location)
 
@@ -26,7 +38,7 @@ num = 2
 location_coordinated = get_location_coordinates(num)
 print(f"first location: {location_coordinated}")
 print(current_player_coordinates)
-"""
+
 location_num = 3
 player_email = 'ammar'
 def get_location_name(location_num):

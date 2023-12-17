@@ -13,31 +13,7 @@
                     <p>{{ player_name }}</p>
                 </div>
         </div>
-
-<!-- Player data Form -->
-        <div class="player-data--container">
-            <form id="player-form" action="{{ url_for('play_game') }}" method="post">
-                <div class="input-div">
-                    <p>Name</p>
-                    <label>
-                        <input type="text" name="player_name">
-                    </label>
-                </div>
-                <div class="input-div">
-                    <p>Email</p>
-                    <label>
-                        <input type="email" name="player_email">
-                    </label>
-                </div>
-                <div class="btn-data--div">
-                    <button type="submit" class="btn-green btn-submit">Play Game</button>
-                    <button type="button" class="btn-red btn-cancel">No Thanks</button>
-                </div>
-            </form>
-        </div>
-
-
-
+    
 <!-- Game Data Container -->
         <h2>Game Data</h2>
         <div class="data-display-container">

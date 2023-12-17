@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Game</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Visit Wonder</title>
+</head>
+<body>
+    <div class="container">
+<!-- Header Container -->
+        <div class="header">
+            <div class="logo">
+                <a href="#" class="logo">Visit Wonder</a>
+            </div>
+            <div class="user-name">
+                <p>{{ player_name }}</p>
+            </div>
+        </div>
+
+<!-- Player data Form -->
+        <div class="player-data--container">
+            <form id="player-form" action="{{ url_for('play_game') }}" method="post">
+                <div class="input-div">
+                    <p>Name</p>
+                    <label>
+                        <input type="text" name="player_name">
+                    </label>
+                </div>
+                <div class="input-div">
+                    <p>Email</p>
+                    <label>
+                        <input type="email" name="player_email">
+                    </label>
+                </div>
+                <div class="btn-data--div">
+                    <button type="submit" class="btn-green btn-submit">Play Game</button>
+                    <button type="button" class="btn-red btn-cancel">No Thanks</button>
+                </div>
+            </form>
+        </div>
+
+        <form action="{{ url_for('play_game') }}" method="post">
+            <label>Difficulty level:</label>
+            <select name="difficulty_level" required>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+
+            <button type="submit">Play Game</button>
+        </form>
+
+<!-- Game Data Container -->
+        <h2>Game Data</h2>
+        <div class="data-display-container">
+            <div class="data">
+                <h4>Target</h4>
+                <p>Visit <span id="num-target-wonders">7</span> wonders</p>
+            </div>
+            <div class="data">
+                <h4>Destinations Visited</h4>
+                <p>You have visited <span id="num-visited-wonders">0</span> wonders</p>
+            </div>
+            <div class="data">
+                <h4>CO2 budget</h4>
+                <p id="co2-budget">10000</p>
+            </div>
+            <div class="data">
+                <h4>CO2 spent</h4>
+                <p id="co2-spent">0</p>
+            </div>
+            <div class="data">
+                <h4>CO2 available</h4>
+                <p id="co2-available">10000</p>
+            </div>
+            <div class="data">
+                <h4>Current Destination</h4>
+                <p id="current-destination">Helsinki</p>
+            </div>
+        </div>
+
+<!-- Header Container -->
+        <h2>List of wonders</h2>
+        <div class="destinations-container">
+            {% for destination in unvisited_destinations %}
+                <button class="destination-btn" data-destination="{{ destination }}">Parthenon {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination}}">Easter Island {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Taj Mahal {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Colosseum {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Angkor {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Angkor {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Petra {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Machu Picchu {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Great Wall of China {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Pyramids of Giza {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Stonehenge {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Hagia Sophia {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Chichen Itza {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Harappa {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">Persepolis {{ destination }}</button>
+                <button class="destination-btn" data-destination="{{ destination }}">The Mesquite of Córdoba{{ destination }}</button>
+            {% endfor %}
+        </div>
+
+            <button class="destination">Parthenon</button>
+            <button class="destination">Easter Island</button>
+            <button class="destination">Taj Mahal</button>
+            <button class="destination">Colosseum</button>
+            <button class="destination">Angkor</button>
+            <button class="destination">Teotihuacan</button>
+            <button class="destination">Petra</button>
+            <button class="destination">Machu Picchu</button>
+            <button class="destination">Great Wall of China</button>
+            <button class="destination">Pyramids of Giza</button>
+            <button class="destination">Stonehenge</button>
+            <button class="destination">Hagia Sophia</button>
+            <button class="destination">Chichen Itza</button>
+            <button class="destination">Harappa</button>
+            <button class="destination">Persepolis</button>
+            <button class="destination">The Mesquite of Córdoba</button>
+
+
+            <div class="destination">
+                <p>Parthenon</p>
+            </div>
+            <div class="destination">
+                <p>Easter Island</p>
+            </div>
+            <div class="destination">
+                <p>Taj Mahal</p>
+            </div>
+            <div class="destination">
+                <p>Colosseum</p>
+            </div>
+            <div class="destination">
+                <p>Angkor</p>
+            </div>
+            <div class="destination">
+                <p>Teotihuacan</p>
+            </div>
+            <div class="destination">
+                <p>Petra</p>
+            </div>
+            <div class="destination">
+                <p>Machu Picchu</p>
+            </div>
+            <div class="destination">
+                <p>Great Wall of China</p>
+            </div>
+            <div class="destination">
+                <p>Pyramids of Giza</p>
+            </div>
+            <div class="destination">
+                <p>Stonehenge</p>
+            </div>
+            <div class="destination">
+                <p>Hagia Sophia</p>
+            </div>
+            <div class="destination">
+                <p>Chichen Itza</p>
+            </div>
+            <div class="destination">
+                <p>Easter Islands</p>
+            </div>
+            <div class="destination">
+                <p>Persepolis</p>
+            </div>
+            <div class="destination">
+                <p>The Mesquite of Córdoba</p>
+            </div>
+        </div>
+        <div class="play-again--container">
+            <button class="btn btn-green">Play Again</button>
+        </div>
+<!-- Map Container -->
+
+        <div id="map">
+
+        </div>
+
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

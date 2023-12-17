@@ -8,8 +8,6 @@ insert_queries = queries_connector.InsertQueries(wonder_database)
 update_queries = queries_connector.UpdateQueries(wonder_database)
 
 
-#### Global Variables ###
-
 
 #### list of destinations
 
@@ -22,6 +20,10 @@ def get_serial_numbers_list(condition):
     return num_destination_list
 
 
+def get_destinations_names_list(condition):
+    destinations_query_result = select_queries.select('serial_num, location', 'airports', condition)
+    destinations_list_dictionary = [{'serial_num': num[0], 'name': num[1]} for num in destinations_query_result]
+    return destinations_list_dictionary
 # Display unvisited lists
 
 
@@ -70,20 +72,15 @@ def get_co2_consumed_by_player(email):
 
 
 # update co2 of player in database
-def update_co2_consumed(co2_consumed_by_player, player_email):
-    update_queries.update('users', f"co2_consumed={co2_consumed_by_player}", f"email='{player_email}'")
+def update_co2_consumed(co2_consumed_by_player, email):
+    update_queries.update('users', f"co2_consumed={co2_consumed_by_player}", f"email='{email}'")
 
 
 # Display unvisited destinations function
-def display_destinations(locations, chose_destination):
+def display_destinations(unvisited_destinations):
     print("Available Destinations:")
-    new_locations = {}
-
-    for num in locations:
-        if num != chose_destination:
-            print(num)
-
-    return new_locations
+    for destination in unvisited_destinations:
+        print(destination)
 
 
 # Game difficulty
@@ -101,8 +98,9 @@ current_player_coordinates = select_queries.select('latitude_deg, longitude_deg'
 select_destination_num = 0
 input_destination = 0
 destinations_list = []
+unvisited_destinations_list = []
 select_all_destinations = get_serial_numbers_list('serial_num < 17')
-destinations_list.append(select_all_destinations[0])
+destinations_list.extend(select_all_destinations)
 num_visited_destinations = 0
 
 ########## Main Program ###########
@@ -141,40 +139,52 @@ if agree_play_game == 'y':
         update_queries.update_difficulty(difficulty, player_email)
         game_win_threshold = game_win_hard
 
-        print(destinations_list)
+        display_destinations(unvisited_destinations_list)
 
     while player_email is not None:
-        co2_consumed = select_queries.select('co2_available', 'users', f"email='{player_email}'")[0][0]
+        unvisited_destinations = set(destinations_list) - set(unvisited_destinations_list)
+        display_destinations(unvisited_destinations)
+        co2_consumed = select_queries.select('co2_consumed', 'users', f"email='{player_email}'")[0][0]
         selected_destination = int(input('Please, choose a number from the available destinations: '))
-
+        unvisited_destinations_list.append(selected_destination)
         get_destination_name = get_location_name(selected_destination)
+
         selected_location_coordinates = get_location_coordinates(selected_destination)
         update_new_destination(get_destination_name, player_email)
 
         num_visited_destinations += 1
 
         distance_in_kilometer = calculate_distance(current_player_coordinates, selected_location_coordinates)
-        co2_calculated = int(distance_in_kilometer * 0.2)
+        co2_calculated = int(distance_in_kilometer * 0.25)
 
-        update_co2_consumed(co2_calculated, player_email)
         total_co2_spent = co2_calculated + co2_consumed
+        update_co2_consumed(total_co2_spent, player_email)
+        co2_available = difficulty - total_co2_spent
+        update_queries.update('users', f"co2_available={co2_available}", f"email='{player_email}'")
 
         print(f"Current Destination Name: {get_destination_name}")
         print(f"Number of visited Destinations: {num_visited_destinations}")
         print(f"Co2 spent on this trip: {co2_calculated}")
         print(f"Total co2 spent: {total_co2_spent}")
 
+        print(f"Total CO2 Spent: {total_co2_spent}, Difficulty: {difficulty}")
+        if total_co2_spent > difficulty:
+            print("You lost the game the game!")
+            exit()
+
         if num_visited_destinations >= game_win_threshold:
             print("You have won the game")
             exit()
 
-        if total_co2_spent > difficulty:
-            print("You lost the game the game!")
-            exit()
 else:
     print('Goodbye!')
 
 """
+
+################## while loop ###########
+
+
+#################################
 
         chosen_location = get_location_coordinates(input_destination)
         print(f"Your current location is: {all_destinations.get(input_destination)}")
