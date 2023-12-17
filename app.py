@@ -71,12 +71,12 @@ def display_destinations(unvisited_destinations):
     for destination in unvisited_destinations:
         print(destination)
 
-
+"""
 def get_destinations_names_list(condition):
     destinations_query_result = select_queries.select('serial_num, location', 'airports', condition)
     destinations_list = [{'serial_num': num[0], 'name': num[1]} for num in destinations_query_result]
     return destinations_list
-
+"""
 
 @app.route('/')
 def home():
@@ -105,9 +105,9 @@ def play_game():
 
     # List of locations with num and name
 
-    #destinations_names_list = []
-    #select_all_destinations = get_destinations_names_list('serial_num < 17')
-    #destinations_names_list.extend(select_all_destinations)
+    # destinations_names_list = []
+    # select_all_destinations = get_destinations_names_list('serial_num < 17')
+    # destinations_names_list.extend(select_all_destinations)
 
     num_visited_destinations = 0
 
