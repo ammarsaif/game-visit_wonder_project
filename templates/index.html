@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Game</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>{% block title %}Visit Wonder{% endblock title %}</title>
+</head>
+<body>
+    <div class="container">
+<!-- Header Container -->
+        <div class="header">
+            <div class="logo">
+                <a href="#" class="logo">Visit Wonder</a>
+            </div>
+            <div class="user-name">
+                <p>Player Name</p>
+            </div>
+        </div>
+
+<!-- Player data Form -->
+        <div class="player-data--container">
+            <form id="player-form">
+                <div class="input-div">
+                    <p>Name</p>
+                    <label>
+                        <input type="text" name="player_name">
+                    </label>
+                </div>
+                <div class="input-div">
+                    <p>Email</p>
+                    <label>
+                        <input type="email" name="player_email">
+                    </label>
+                </div>
+                <div class="btn-data--div">
+                    <button type="submit" class="btn-green btn-submit">Play Game</button>
+                    <button type="button" class="btn-red btn-cancel" >No Thanks</button>
+                </div>
+            </form>
+        </div>
+
+<!-- Game Data Container -->
+         <h2>Game Data</h2>
+        <div class="data-display-container">
+            <div class="data">
+                <h4>Target</h4>
+                <p>Visit <span class="num-target-wonders">7</span> wonders</p>
+            </div>
+            <div class="data">
+                <h4>Destinations Visited</h4>
+                <p>You have visited <span class="num-visited-wonders">2</span> wonders</p>
+            </div>
+            <div class="data">
+                <h4>CO2 budget</h4>
+                <p>10000</p>
+            </div>
+            <div class="data">
+                <h4>CO2 spent</h4>
+                <p>2000</p>
+            </div>
+            <div class="data">
+                <h4>CO2 available</h4>
+                <p>8000</p>
+            </div>
+            <div class="data">
+                <h4>Current Destination</h4>
+                <p>Helsinki</p>
+            </div>
+        </div>
+
+<!-- Header Container -->
+        <h2>List of wonders</h2>
+        <div class="destinations-container">
+            <div class="destination">
+                <p>Parthenon</p>
+            </div>
+            <div class="destination">
+                <p>Easter Island</p>
+            </div>
+            <div class="destination">
+                <p>Taj Mahal</p>
+            </div>
+            <div class="destination">
+                <p>Colosseum</p>
+            </div>
+            <div class="destination">
+                <p>Angkor</p>
+            </div>
+            <div class="destination">
+                <p>Teotihuacan</p>
+            </div>
+            <div class="destination">
+                <p>Petra</p>
+            </div>
+            <div class="destination">
+                <p>Machu Picchu</p>
+            </div>
+            <div class="destination">
+                <p>Great wall of china</p>
+            </div>
+            <div class="destination">
+                <p>Pyramids of Giza</p>
+            </div>
+            <div class="destination">
+                <p>Stonehenge</p>
+            </div>
+            <div class="destination">
+                <p>Hagia Sophia</p>
+            </div>
+            <div class="destination">
+                <p>Chichen Itza Pyramid</p>
+            </div>
+            <div class="destination">
+                <p>Easter Islands</p>
+            </div>
+            <div class="destination">
+                <p>Royal city of the Achaemenids</p>
+            </div>
+            <div class="destination">
+                <p>The Mezquita of Cordoba</p>
+            </div>
+        </div>
+        <div class="play-again--container">
+            <button class="btn btn-green">Play Again</button>
+        </div>
+<!-- Map Container -->
+
+        <div id="map">
+
+        </div>
+
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
