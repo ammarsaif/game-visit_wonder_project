@@ -1,28 +1,30 @@
-body {
-    font-family: 'Arial', sans-serif;
+body, h1, h2, h4, p, ul, li {
     margin: 0;
     padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
     background-color: #ecf0f3; /* Light blue-gray background */
 }
 
 /* Fonts */
 h2 {
-    margin: 16px 8px;
+    margin-top: 1rem;
     color: #333;
 }
 
-/* Main Container */
+/* Common Container Styles */
 .container {
-    max-width: 1200px; /* max-width for better display on larger screens */
+    max-width: 1200px;
     margin: 0 auto;
     padding: 10px;
-    background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
-/* Header */
+/* Header Styles */
 .header {
     background-color: #5bbad5;
     height: 8vh;
@@ -34,64 +36,143 @@ h2 {
     margin-bottom: 10px;
 }
 
-.header p {
+.header div p {
     color: white;
     font-size: 2rem;
     font-weight: bold;
-
 }
 
-/* Form Container */
-
-.btn-data--div {
-    margin-top: 1rem;
-    height: fit-content;
-    width: 100%;
-    display: flex;
-    justify-content: initial;
-    align-items: center;
-}
-.input-div {
-    padding: 5px 10px;
-    display: inline-block;
-    margin: 5px 10px;
+/* Logo Styles */
+.logo-link {
+    color: white; /* Set text color to white */
+    text-decoration: none; /* Remove underline */
+    font-size: 32px; /* Adjust font size */
+    font-weight: bold; /* Make text bold */
 }
 
-.input-div p {
-    font-size: 1.5rem;
-    font-weight: bold;
+/* Welcome Container Styles */
+.welcome-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: left; /* Align text to the left */
 }
 
-.input-div label input {
+.welcome-container h2 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.welcome-container p {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    text-align: left; /* Align text to the left */
+}
+
+.welcome-container h3 {
+    color: #333;
     font-size: 20px;
+    margin-bottom: 10px;
 }
 
-input {
-    width: 300px;
+.welcome-container ul {
+    list-style-type: none;
+}
+
+.welcome-container ul li {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.welcome-container ul ul {
+    margin-left: 20px;
+}
+
+/* Button Styles */
+.start_game--button, .submit_btn, button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+}
+
+.start_game--button {
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.start_game--button:hover {
+    background-color: #2980b9;
+}
+
+.submit_btn, button {
+    background-color: #00cc44;
+    color: #ffff;
+    transition: background-color 0.3s;
+}
+
+.submit_btn:hover, button:hover {
+    background-color: #009933;
+}
+
+/* Form Styles */
+form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+label {
+    display: block;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Input Styles */
+input, select {
+    font-size: 18px;
+    width: 100%;
     padding: 10px;
+    margin-bottom: 15px;
     box-sizing: border-box;
-    border: 3px solid #f0f0f0;
-    border-radius: 4px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-
-/* Data Display */
+/* Data Display Styles */
 .data-display-container {
     height: auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    margin: 10px 0;
+    padding: 5px;
+    margin: 5px 0;
     background-color: #f0f0f0;
     border-radius: 8px;
-
 }
 
-/* Data */
+/* Data Styles */
 .data {
-    height: 80px;
+    height: 40px;
     border: 3px solid #ccc;
     border-radius: 8px;
     padding: 10px;
@@ -99,8 +180,8 @@ input {
     margin: 10px;
 }
 
-/* Destinations */
-.destinations-container {
+/* Destinations Container Styles */
+.destinations-container, .game-data-display-container {
     width: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -109,89 +190,75 @@ input {
     padding: 5px;
     border-radius: 8px;
     margin: 5px 0;
-    height: 10vh;
 }
 
-/* Destination */
-.destination-btn {
-    /*position: relative;*/
+/* Additional Data Display Styles */
+.game-container .data p {
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+/* Destination Button Styles */
+.destination-btn, .btn-destination {
     min-height: 2rem;
     width: auto;
     border-radius: 8px;
     margin: 5px;
-    background-color: #78c679;
     display: flex;
     align-items: center;
     padding: 3px 6px;
     color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-
-
-/* Play Again Container */
-
-.play-again--container {
-    position: relative;
-    height: 8vh;
-    width: auto;
-    border-radius: 8px;
-    margin: 5px;
-    background-color: #f4f4f4;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 3px 6px;
+.destination-btn {
+    background-color: #78c679;
 }
 
-
-.play-again--container button {
-    background-color: #b38600;
+.btn-destination {
+    background-color: #3498db;
 }
 
-.play-again--container button:hover {
-    background-color: #ffbf00;
-}
-
-
-/* Map Container */
+/* Map Styles */
 #map {
     width: 100%;
     height: 48vh;
     border-radius: 8px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
-/* Logo */
-.logo a {
-    color: #333;
-    text-decoration: none;
-    font-size: 28px; /* Increased font size for better visibility */
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
     font-weight: bold;
-}
-
-/* Play Game Button */
-button {
-    color: #fff;
-    padding: 20px 40px; /* Increased padding for better spacing */
-    border: none;
-    border-radius: 8px;
     cursor: pointer;
-    font-size: 2rem; /* Increased font size for better visibility */
-    margin: 4px 8px;
 }
 
-.btn-green {
-    background-color: #009933;
+.close:hover {
+    color: black;
 }
-.btn-green:hover {
-    background-color: #00cc44;
-}
-
-.btn-red {
-    background-color:  #e60000;
-}
-
-.btn-red:hover {
-    background-color:  #ff3333;
-}
-

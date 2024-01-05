@@ -8,11 +8,51 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+let markersData = [
+    { coordinates: [60.3172, 24.963], tooltipContent: "Helsinki, Finland" },
+    { coordinates: [37.971, 23.72], tooltipContent: "Parthenon, Greece" },
+    { coordinates: [-27.12, -109.34], tooltipContent: "Easter Islands, Chile" },
+    { coordinates: [26.007, 78.04], tooltipContent: "Taj Mahal, India" },
+    { coordinates: [41.89, 12.49], tooltipContent: "Colosseum, Italy" },
+    { coordinates: [13.41, 103.86], tooltipContent: "Angkor, Cambodia" },
+    { coordinates: [19.68, -98.87], tooltipContent: "Teotihuacan, Mexico" },
+    { coordinates: [20.93, -88.56], tooltipContent: "Chichen Itza, Mexico" },
+    { coordinates: [-13.22, -72.49], tooltipContent: "Machu Picchu, Peru" },
+    { coordinates: [30.32, 35.44], tooltipContent: "Petra, Jordan" },
+    { coordinates: [40.43, 116.58], tooltipContent: "Great Wall of China" },
+    { coordinates: [30.12, 31.40], tooltipContent: "Pyramids of Giza, Egypt" },
+    { coordinates: [51.17, -1.82], tooltipContent: "Stonehenge, UK" },
+    { coordinates: [41.261, 28.741], tooltipContent: "Hagia Sofia, Turkey" },
+    { coordinates: [30.61, 72.89], tooltipContent: "Harappa, Pakistan" },
+    { coordinates: [29.53, 52.89], tooltipContent: "Persepolis, Iran" },
+    { coordinates: [37.888, -4.779], tooltipContent: "The Mezquita of Córdoba, Spain" },
+];
+
+// Loop through the marker data and create markers
+for (let markerData of markersData) {
+    let marker = L.marker(markerData.coordinates).addTo(map);
+    marker.bindTooltip(markerData.tooltipContent).openTooltip();
+
+    // Show popup on mouse hover
+    marker.on('mouseover', function () {
+        marker.openPopup();
+    });
+
+    // Close popup when mouse is not hovering
+    marker.on('mouseout', function () {
+        marker.closePopup();
+    });
+}
+
+
+/*
 let helsinki = L.marker([60.3172, 24.963]).addTo(map);
 helsinki.bindPopup("<b>Default Location</b><br>Helsinki").openPopup();
+helsinki.bindTooltip("Helsinki").openTooltip();
 
 let parthenon = L.marker([37.971, 23.72]).addTo(map);
 parthenon.bindPopup("<b>Parthenon</b><br>Greece").openPopup();
+parthenon.bindTooltip("Parthenon").openTooltip();
 
 let easterIsland = L.marker([-27.12, -109.34]).addTo(map);
 easterIsland.bindPopup("<b>Easter Islands</b><br>Chile").openPopup();
@@ -70,74 +110,130 @@ function onMapClick(e) {
 }
 
 map.on('click', onMapClick);
+*/
 
 
-
-function updateGameData(play_game) {
-    document.getElementById('num-target-wonders').textContent = play_game.difficulty;
-    document.getElementById('num-visited-wonders').textContent = play_game.num_visited_destinations;
-    document.getElementById('co2-budget').textContent = play_game.difficulty;
-    document.getElementById('co2-spent').textContent = play_game.co2_calculated;
-    document.getElementById('co2-available').textContent = play_game.co2_available;
-    document.getElementById('current-destination').textContent = play_game.current_destination_name;
-}
-
+// Form submit function
 document.addEventListener('DOMContentLoaded', function () {
-    let selectedDestination;  // Declare selectedDestination in a broader scope
+    const registerForm = document.querySelector('#registerPlayerForm');
 
-    const buttons = document.querySelectorAll('.destination-btn');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function () {
-            selectedDestination = this.getAttribute('data-destination');
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/register_player', {
+                    method: 'POST',
+                    body: formData
+                });
 
-            // Send the selected destination to the server using AJAX
-            fetch('/play_game', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `selected_destination=${selectedDestination}`,
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log(data);  // Handle the server response
-                // Assuming the server response contains game data, update the UI
-                updateGameData(JSON.parse(data));
-            })
-            .catch(error => console.error('Error:', error));
-        }); // <- Add this closing brace
+                if (response.ok) {
+                    const result = await response.json();
+
+                    // Log the result to the console
+                    console.log('Server Response:', result);
+
+                    if (result.status === 'success') {
+                        console.log('Player registered successfully');
+                    } else {
+                        console.error('Player registration failed:', result.error);
+                    }
+                } else {
+                    console.error('Failed to submit the form. HTTP status:', response.status);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    } else {
+        console.error('Register form not found');
+    }
+});
+
+
+/* Game Play Async Function */
+document.addEventListener("DOMContentLoaded", function () {
+    let destinationButtons = document.querySelectorAll(".btn-destination");
+
+    destinationButtons.forEach(function (button) {
+        button.addEventListener("click", function () {
+            button.style.display = 'none';
+            let selectedDestination = button.getAttribute("data-destination");
+
+            if (selectedDestination) {
+                // AJAX request to handle form submission
+                fetch('/play_game', {
+                    method: 'POST',
+                    body: JSON.stringify({ 'data-destination': selectedDestination }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Update the relevant elements with the new data
+                    document.querySelector("#budget").textContent = data.co2_budget;
+                    document.querySelector("#spent").textContent = data.total_co2_spent;
+                    document.querySelector("#available").textContent = data.co2_available;
+                    document.querySelector("#visited").textContent = data.num_visited_destinations;
+                    document.querySelector("#target").textContent = data.game_win_threshold;
+                    document.querySelector("#location").textContent = data.current_location_name;
+                    document.querySelector("#distance").textContent = data.distance_in_kilometer;
+
+                    // Check if the game is won or lost and show the modal
+                    if (data.status === 'won' || data.status === 'lost') {
+                        let message = data.status === 'won' ? 'Congratulations! You won!' : 'Sorry! You lost!';
+                        showModal(message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle the error, e.g., display an error message to the user
+                });
+            } else {
+                console.error('Selected destination is not set.');
+            }
+        });
     });
 });
 
+function showModal(message) {
+    var modal = document.getElementById("gameResultModal");
+    var modalLabel = document.getElementById("gameResultModalLabel");
 
-// click event on play again button
+    modalLabel.textContent = message;
+    modal.style.display = "block";
+}
 
-/*let playButton = document.querySelector(".btn-play_game")*/
+function closeModal() {
+    var modal = document.getElementById("gameResultModal");
+    modal.style.display = "none";
+}
 
-/*
-playButton.addEventListener('click', function () {
-    alert('Play Again button has been clicked');
-});
+function playAgain() {
+    // Your logic for restarting the game
+    closeModal();
 
+    // Clear session data related to the game
+    fetch('/clear_session', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Redirect to the player_info route to start a new game
+            window.location.href = '/player_info';
+        } else {
+            console.error('Error clearing session data.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle the error, e.g., display an error message to the user
+    });
+}
 
-/*
-// You can use selectedDestination elsewhere in your code
-fetch('/play_game', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: `selected_destination=${selectedDestination}`,
-})
-.then(response => response.text())
-.then(data => {
-    console.log(data);  // Handle the server response
-    // Assuming the server response contains game data, update the UI
-    updateGameData(JSON.parse(data));
-})
-.catch(error => console.error('Error:', error));
-});
-
-
-*/

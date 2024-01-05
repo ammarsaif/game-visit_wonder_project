@@ -79,6 +79,7 @@ class UpdateQueries:
         self.connection.commit()
 
     def update_location(self, location, player_email):
+        current_location = 'Helsinki'
         sql = 'UPDATE users SET current_location = %s WHERE email = %s;'
         values = (location, player_email)
 
@@ -101,6 +102,18 @@ class UpdateQueries:
 
         self.connection.commit()
 
+    def update_game_win_threshold(self, game_win, player_email):
+        table = 'users'
+        field_and_value = "game_win = %s"
+        where = "email = %s"
+        values = (game_win, player_email)
+
+        sql = f"UPDATE {table} SET {field_and_value} WHERE {where}"
+
+        with self.connection.cursor() as cursor:
+            cursor.execute(sql, values)
+
+        self.connection.commit()
 
 """
 sql = 'SELECT ident, municipality, name FROM airport WHERE ident = "EFHK";'

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %} Player Form {% endblock %}
+
+{% block body %}
+    <!-- Player data Form -->
+    <div>
+        <h2>Register Player</h2>
+        <form id="registerPlayerForm" method="post" action="{{ url_for('player_info') }}">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="difficulty">Difficulty (easy, medium, hard):</label>
+            <select id="difficulty" name="difficulty" required>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+
+            <button class="submit-btn" type="submit">Enter</button>
+        </form>
+    </div>
+{% endblock %}

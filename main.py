@@ -8,7 +8,6 @@ insert_queries = queries_connector.InsertQueries(wonder_database)
 update_queries = queries_connector.UpdateQueries(wonder_database)
 
 
-
 #### list of destinations
 
 def get_serial_numbers_list(condition):
@@ -24,6 +23,7 @@ def get_destinations_names_list(condition):
     destinations_query_result = select_queries.select('serial_num, location', 'airports', condition)
     destinations_list_dictionary = [{'serial_num': num[0], 'name': num[1]} for num in destinations_query_result]
     return destinations_list_dictionary
+
 
 # check existing player in the database
 def get_existing_player_info(email):
@@ -57,7 +57,6 @@ def get_location_name(location_num):
 # updates the destination in database
 
 def update_new_destination(location, email):
-    # update_queries.update_location('users', 'current_location = %s', 'email = %s', (chosen_num_by_player, player_email))
     update_queries.update_location(location, email)
 
 
@@ -79,34 +78,141 @@ def display_destinations(unvisited_destinations):
         print(destination)
 
 
-# Game difficulty
-difficulty = 0
-difficulty_easy = 10000
-difficulty_medium = 12000
-difficulty_hard = 16000
-game_win_easy = 7
-game_win_medium = 10
-game_win_hard = 14
-game_win_threshold = 0
-# player = None
-current_location = 'Helsinki'
-current_player_coordinates = select_queries.select('latitude_deg, longitude_deg', 'airports', f"serial_num='{17}'")[0]
-select_destination_num = 0
-input_destination = 0
-destinations_list = []
-unvisited_destinations_list = []
-select_all_destinations = get_serial_numbers_list('serial_num < 17')
-destinations_list.extend(select_all_destinations)
-num_visited_destinations = 0
+def set_game_win_threshold(game_win_threshold, email):
+    update_queries.update_game_win_threshold(game_win_threshold, email)
+
+
+def set_difficulty(difficulty_level, email):
+    update_queries.update_difficulty(difficulty_level, email)
+
+
+# Register player info
+
+def register_player(email, name):
+    existing_player = get_existing_player_info(email)
+
+    if existing_player is None:
+        default_location = select_queries.select('location', 'airports', f"serial_num='{17}'")[0][0]
+        insert_queries.insert_new_player(email, name, default_location)
+
+    return email
+
+# set Game condition
+
+def set_game_win_conditions(player_email, input_difficulty_level):
+    difficulty_easy = 10000
+    difficulty_medium = 12000
+    difficulty_hard = 16000
+    game_win_easy = 6
+    game_win_medium = 9
+    game_win_hard = 13
+    game_win_threshold = 0
+    difficulty = 0
+
+    if input_difficulty_level == "easy":
+        difficulty = difficulty_easy
+        set_difficulty(difficulty, player_email)
+        game_win_threshold = game_win_easy
+        set_game_win_threshold(game_win_threshold, player_email)
+    elif input_difficulty_level == "medium":
+        difficulty = difficulty_medium
+        set_difficulty(difficulty, player_email)
+        game_win_threshold = game_win_medium
+        set_game_win_threshold(game_win_threshold, player_email)
+    elif input_difficulty_level == "hard":
+        difficulty = difficulty_hard
+        set_difficulty(difficulty, player_email)
+        game_win_threshold = game_win_hard
+        set_game_win_threshold(game_win_threshold, player_email)
+
+    return game_win_threshold, difficulty
+# Play game function
+
+def play_game(player_email, difficulty, game_win_threshold):
+    num_visited_destinations = 0
+
+    co2_emission_factor = 0.35
+    current_player_coordinates = select_queries.select('latitude_deg, longitude_deg', 'airports', f"serial_num='{17}'")[
+        0]
+    default_location_serial_num = 17
+    destinations_list = []
+    unvisited_destinations_list = []
+    select_all_destinations = get_serial_numbers_list(default_location_serial_num)
+    destinations_list.extend(select_all_destinations)
+
+    while player_email is not None:
+        unvisited_destinations = list(set(destinations_list) - set(unvisited_destinations_list))
+        print(unvisited_destinations)
+        display_destinations(unvisited_destinations)
+        co2_consumed = select_queries.select('co2_consumed', 'users', f"email='{player_email}'")[0][0]
+        selected_destination = int(input('Please, choose a number from the available destinations: '))
+        unvisited_destinations_list.append(selected_destination)
+        get_destination_name = get_location_name(selected_destination)
+
+        selected_location_coordinates = get_location_coordinates(selected_destination)
+        update_new_destination(get_destination_name, player_email)
+
+        num_visited_destinations += 1
+
+        distance_in_kilometer = calculate_distance(current_player_coordinates, selected_location_coordinates)
+        co2_calculated = int(distance_in_kilometer * co2_emission_factor)
+
+        total_co2_spent = co2_calculated + co2_consumed
+        update_co2_consumed(total_co2_spent, player_email)
+        co2_available = difficulty - total_co2_spent
+        update_queries.update('users', f"co2_available={co2_available}", f"email='{player_email}'")
+
+        print(f"Current Destination Name: {get_destination_name}")
+        print(f"Number of visited Destinations: {num_visited_destinations}")
+        print(f"Co2 spent on this trip: {co2_calculated}")
+        print(f"Total co2 spent: {total_co2_spent}")
+
+        print(f"Total CO2 Spent: {total_co2_spent}, Difficulty: {difficulty}")
+        if total_co2_spent > difficulty:
+            print("You lost the game the game!")
+            exit()
+
+        if num_visited_destinations >= game_win_threshold:
+            print("You have won the game")
+            exit()
+
 
 ########## Main Program ###########
-
 agree_play_game = input('Do you want to play? Type "y" for yes and "n" for no: ')
 
 if agree_play_game == 'y':
-    # all_destinations = select_queries.select(('id', 'email'), 'users')
+    player_exists = get_existing_player_info(player_email)  # returns player at index 1
+    player_exists = get_existing_player_info(player_email)
     player_email = input("Enter your email? ")
+    player_name = input("Enter your name? ")
+    input_difficulty_level = input("Enter your difficulty: ")
 
+    register_player(player_email, player_name)
+    set_game_win_conditions(player_email, input_difficulty_level)
+    game_win_threshold, difficulty = set_game_win_conditions(player_email, input_difficulty_level)
+
+    play_game(player_email, difficulty, game_win_threshold)
+
+    # print
+    print(f"player_email: {player_email}")
+    print(f"player_name: {player_name}")
+    print(f"Selected difficulty: {input_difficulty_level}")
+    print(f"game_difficulty: {difficulty}")
+    print(f"Game winning threshold: {game_win_threshold}")
+    print(f"Game difficulty: {difficulty}")
+    # returns player at index 1
+
+
+
+# display_destinations(unvisited_destinations_list)
+
+
+"""
+
+################## working difficulty and while loop ###########
+
+
+if agree_play_game == 'y':
     player_exists = get_existing_player_info(player_email)  # returns player at index 1
 
     if player_exists is None:
@@ -121,19 +227,22 @@ if agree_play_game == 'y':
         # Move the call here
 
     input_difficulty_level = input("Difficulty level: Select easy, medium, or hard: ")
-
+    
     if input_difficulty_level == "easy":
         difficulty = difficulty_easy
-        update_queries.update_difficulty(difficulty, player_email)
+        set_game_win_threshold(difficulty, player_email)
         game_win_threshold = game_win_easy
+        set_game_win_threshold(game_win_threshold, player_email)
     elif input_difficulty_level == "medium":
         difficulty = difficulty_medium
-        update_queries.update_difficulty(difficulty, player_email)
+        set_game_win_threshold(difficulty, player_email)
         game_win_threshold = game_win_medium
+        set_game_win_threshold(game_win_threshold, player_email)
     elif input_difficulty_level == "hard":
         difficulty = difficulty_hard
-        update_queries.update_difficulty(difficulty, player_email)
+        set_game_win_threshold(difficulty, player_email)
         game_win_threshold = game_win_hard
+        set_game_win_threshold(game_win_threshold, player_email)
 
         display_destinations(unvisited_destinations_list)
 
@@ -151,7 +260,7 @@ if agree_play_game == 'y':
         num_visited_destinations += 1
 
         distance_in_kilometer = calculate_distance(current_player_coordinates, selected_location_coordinates)
-        co2_calculated = int(distance_in_kilometer * 0.25)
+        co2_calculated = int(distance_in_kilometer * 0.35)
 
         total_co2_spent = co2_calculated + co2_consumed
         update_co2_consumed(total_co2_spent, player_email)
@@ -175,31 +284,37 @@ if agree_play_game == 'y':
 else:
     print('Goodbye!')
 
-"""
-
-################## while loop ###########
-
 
 #################################
 
-        chosen_location = get_location_coordinates(input_destination)
-        print(f"Your current location is: {all_destinations.get(input_destination)}")
+def register_player(email, name):
+    
+    location = select_queries.select('location', 'airports', f"serial_num='{17}'")[0][
+        0]  # select Helsinki as default location at 17
+    insert_queries.insert_new_player(email, name, location)
+    email = select_queries.select('email AS last_item', 'users', 'id = (SELECT MAX(id) FROM users)')[0][0]
+    name = select_queries.select('name AS last_item', 'users', 'id = (SELECT MAX(id) FROM users)')[0][0]
 
-        distance_in_kilometer = calculate_distance(current_player_coordinates, chosen_location)
-        co2_consumed_by_player = int(distance_in_kilometer * 0.2) + int(player_email['co2_consumed'])
-        update_co2_consumed(co2_consumed_by_player, player_email)
+    return email, name, location
 
-        num_visited_destinations += 1
-        print(f"Number of visited Destinations: {num_visited_destinations}")
-        print(f"Distance traveled: {distance_in_kilometer} km")
-        print(f"CO2 consumed: {co2_consumed_by_player} units")
+chosen_location = get_location_coordinates(input_destination)
+print(f"Your current location is: {all_destinations.get(input_destination)}")
 
-        if num_visited_destinations >= game_win_threshold:
-            print("Congratulations! You've visited enough destinations to win the game!")
-            exit()
-        if co2_consumed_by_player > difficulty:
-            print("Game Over. You've consumed too much CO2!")
-            exit()
+distance_in_kilometer = calculate_distance(current_player_coordinates, chosen_location)
+co2_consumed_by_player = int(distance_in_kilometer * 0.2) + int(player_email['co2_consumed'])
+update_co2_consumed(co2_consumed_by_player, player_email)
+
+num_visited_destinations += 1
+print(f"Number of visited Destinations: {num_visited_destinations}")
+print(f"Distance traveled: {distance_in_kilometer} km")
+print(f"CO2 consumed: {co2_consumed_by_player} units")
+
+if num_visited_destinations >= game_win_threshold:
+    print("Congratulations! You've visited enough destinations to win the game!")
+    exit()
+if co2_consumed_by_player > difficulty:
+    print("Game Over. You've consumed too much CO2!")
+    exit()
 
 """
 

@@ -1,74 +1,77 @@
 {% extends 'base.html' %}
-{% block head %}
 
-{% endblock %}
+{% block title %} Play Game {% endblock %}
+
 {% block body %}
-    <div class="container">
-<!-- Header Container -->
-            <div class="header">
-                <div class="logo">
-                    <a href="#" class="logo">Visit Wonder</a>
-                </div>
-                <div class="user-name">
-                    <p>{{ player_name }}</p>
-                </div>
-        </div>
-    
-<!-- Game Data Container -->
+    <div class="game-container">
+        <h1>Play Game</h1>
         <h2>Game Data</h2>
-        <div class="data-display-container">
+        <div class="game-data-display-container">
             <div class="data">
-                <h4>Target</h4>
-                <p>Visit <span id="num-target-wonders">7</span> wonders</p>
+                <h4>CO2 Budget</h4>
+                <p><span id="budget">{{ co2_budget }}</span></p>
             </div>
             <div class="data">
-                <h4>Destinations Visited</h4>
-                <p>You have visited <span id="num-visited-wonders">0</span> wonders</p>
+                <h4>CO2 Spent</h4>
+                <p ></p>
+                <p><span id="spent">{{ total_co2_spent }}</span></p>
             </div>
             <div class="data">
-                <h4>CO2 budget</h4>
-                <p id="co2-budget">10000</p>
+                <h4>Co2 Available</h4>
+                <p><span id="available">{{ co2_available }}</span></p>
             </div>
             <div class="data">
-                <h4>CO2 spent</h4>
-                <p id="co2-spent">0</p>
+                <h4>Number of Visited Destinations</h4>
+                <p><span id="visited">{{ num_visited_destinations }}</span></p>
             </div>
             <div class="data">
-                <h4>CO2 available</h4>
-                <p id="co2-available">10000</p>
+                <h4>Target Number of Destinations</h4>
+                <p ></p>
+                <p><span id="target">{{ game_win_threshold }}</span></p>
             </div>
             <div class="data">
-                <h4>Current Destination</h4>
-                <p id="current-destination">Helsinki</p>
+                <h4>Current Location</h4>
+                <p><span id="location">{{ current_location_name }}</span></p>
+            </div>
+            <div class="data">
+                <h4>Last Trip Distance</h4>
+                <p ></p>
+                <p><span id="distance">{{ distance_in_kilometer }}</span></p>
             </div>
         </div>
-
-<!-- Header Container -->
-        <h2>List of wonders</h2>
-        <div class="destinations-container">
-            {% for destination in destinations_list %}
-                <button class="destination-btn" data-destination="{{ destination }}">Parthenon {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Easter Island {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Taj Mahal {{ destination }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Colosseum {{ destination }}</button>
-                <button class="destination-btn" data-destination="{{ destination }}">Angkor {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Angkor {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Petra {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Machu Picchu {{ destination }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Great Wall of China {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Pyramids of Giza {{ destination}}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Stonehenge {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Hagia Sophia {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Chichen Itza {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination }}">Harappa {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">Persepolis {{ destination  }}</button>
-                <button class="destination-btn" data-destination="{{ destination  }}">The Mesquite of Córdoba{{ destination  }}</button>
+    </div>
+    <div class="destinations-container">
+        {% if unvisited_destinations %}
+            {% for destination in unvisited_destinations %}
+                {% for key, value in destination.items() %}
+                    <button type="button" class="btn-destination"
+                            data-destination="{{ key }}"
+                            name="{{ value }}"
+                            value="{{ key }}">
+                        {{ value }}
+                    </button>
+                {% endfor %}
             {% endfor %}
-        </div>
-        <div id="map">
+        {% else %}
+            <p>No unvisited destinations.</p>
+        {% endif %}
+    </div>
 
-        </div>
+
+
+
+    <div id="map">
 
     </div>
-    <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+
+    <div id="gameResultModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="gameResultModalLabel"></h2>
+            <button class="btn btn-primary" onclick="playAgain()">Play Again</button>
+        </div>
+    </div>
+
+
+
 {% endblock %}
