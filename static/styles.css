@@ -88,8 +88,7 @@ h2 {
     color: #555;
     font-size: 16px;
     margin-bottom: 5px;
-    font-weight: bold;
-    letter-spacing: 1px;
+    line-height: 1.2rem;
 }
 
 .welcome-container ul ul {
@@ -108,7 +107,7 @@ h2 {
 }
 
 .start_game--button {
-    background-color: #3498db;
+    background-color: #00cc44;
     color: #fff;
     text-decoration: none;
     transition: background-color 0.3s;
@@ -125,7 +124,7 @@ h2 {
 }
 
 .submit_btn:hover, button:hover {
-    background-color: #009933;
+    background-color: #2980b9;
 }
 
 /* Form Styles */
