@@ -219,6 +219,7 @@ def play_game():
         print(f"num visited destinations: {num_visited_destinations}")
 
         distance_in_kilometer = round(calculate_distance(current_player_coordinates, selected_location_coordinates), 2)
+        print(f"distance_in_kilometer: {distance_in_kilometer}")
         co2_calculated = int(distance_in_kilometer * co2_emission_factor)
 
         # Retrieve the current total_co2_spent from the database
