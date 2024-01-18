@@ -1,6 +1,7 @@
 This game was developed for Software 1 and Software 2 courses for B.Sc in Information Technology in Metropolia University of Applied Sciences, Helsinki, Finland.
 
-- Live demo of this game can be watched by clicking below link:
+- Live demo of this game can be watched by clicking on link:
+
 https://www.youtube.com/watch?v=tDkUOLVHczY
 
 In Order to play and win this game, if players visit a specific number of destinations under allocated CO2 budget. CO2 budget and the number of destinations to visit are based on the selection of the game difficulty level. Game difficulty is easy, medium, and hard.
